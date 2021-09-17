@@ -1,1 +1,1 @@
-utilities for version 1 of my software
+utilities for version 2 of my software
