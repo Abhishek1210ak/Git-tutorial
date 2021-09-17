@@ -1,0 +1,239 @@
+{% extends 'teachers/teachers_base.html' %}
+{% load static %}
+
+{% block content %}
+<style type="text/css">
+  /* Styles required only for the example above */
+.scrollspy-example {
+  position: relative;
+/*  height: 200px;*/
+  overflow: auto;
+}
+    .list-group-item.smart_active {
+        z-index: 2;
+        color: #fff;
+        background-color: purple;
+        border-color: purple;
+    }
+</style>
+
+<h2 class="h3 fw-bold text-center">
+    <span class="float-left mt-2">
+        Test Result of  {{current_student.college_rollno}}
+
+        <span style="color:deeppink;">{{current_test.test_title}}</span>
+    </span>
+    {% if result %}
+        <span class="badge bg-primary mt-2"> Student result {{score}} (Pass)</span>
+    {% else %}
+    <span class="badge bg-danger mt-2"> Student result {{score}} (fail)</span>
+    {% endif %}
+
+</h2>
+<br>
+<hr>
+
+<div> 
+  <h7 class="h3 fw-bold text-center float-left" style="color: #00b74a;">Student Exam Photes</h7>
+  <button type="button" class="btn btn-danger float-right"  aria-pressed="true" data-toggle="modal"data-target="#remportspamstudent">Report Spam <i class="fas fa-flag"></i></button>
+  <br>
+</div>
+<br>
+<br>
+<hr>
+<div class="row row-cols-{% widthratio all_pictures|length 4 1%} row-cols-md-4 g-7">
+  {% for picture in all_pictures %}
+
+  <div class="col">
+    <div class="card h-100">
+      <img
+        src="{{picture.student_image.url}}"
+        class="card-img-top"
+        alt="..."
+        sty
+        width="520"
+        heoght="720"
+      />
+      <div class="card-body">
+        <h5 class="card-title" style="font-size: 100%;"> {{picture.student.get_full_name}}</h5>
+        <p class="card-text">{{picture.created}}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  {% endfor %}
+</div>
+<div class="row">
+  <div class="col-md-8">
+    <!-- Spied element -->
+    <div
+      data-mdb-spy="scroll"
+      data-mdb-target="#scrollspy1"
+      data-mdb-offset="0"
+      class="scrollspy-example"
+    >
+    {% for question_answer in all_student_questions %}
+      <section id="question-{{ forloop.counter }}" class="mt-4">
+        <ul class="list-group">
+            <li class="list-group-item active" aria-current="true">
+                <span class="badge bg-secondary rounded-pill">
+                    Q {{ forloop.counter }}
+                </span>
+                {{question_answer.question.question_title}} 
+                <span class="float-right">
+                    <h5>
+                        {% if question_answer.student_option == question_answer.question.correct_option  %}
+                            <span class="badge bg-success rounded-pill">+1</span>
+                        {% else %}
+                            <span class="badge bg-danger rounded-pill">0</span>
+                        {% endif %}
+                    </h5>
+                </span>
+            </li>
+                <li class="list-group-item {% if '1' == question_answer.question.correct_option  %}list-group-item-success {% elif '1' == question_answer.student_option and  question_answer.student_option != question_answer.question.correct_option %}list-group-item-danger{% endif %} ">
+                    <span class="fw-bold float-left">Option 1 </span>
+                    <span class="fw-bold float-right">{{question_answer.question.option_1}}</span>
+                  </li> 
+
+                     <li class="list-group-item {% if '2' == question_answer.question.correct_option  %}list-group-item-success {% elif '2' == question_answer.student_option  and question_answer.student_option != question_answer.question.correct_option  %}list-group-item-danger{% endif %} ">
+                    <span class="fw-bold float-left">Option 2 </span>
+                    <span class="fw-bold float-right">{{question_answer.question.option_2}}</span>
+                  </li>
+                <li class="list-group-item {% if '3' == question_answer.question.correct_option  %}list-group-item-success {% elif '3' == question_answer.student_option and question_answer.student_option != question_answer.question.correct_option  %}list-group-item-danger{% endif %} ">
+                    <span class="fw-bold float-left">Option 3 </span>
+                    <span class="fw-bold float-right">{{question_answer.question.option_3}}</span>
+                  </li>
+                <li class="list-group-item {% if '4' == question_answer.question.correct_option  %}list-group-item-success {% elif '4' == question_answer.student_option  and question_answer.student_option != question_answer.question.correct_option  %}list-group-item-danger{% endif %} ">
+                    <span class="fw-bold float-left">Option 4 </span>
+                    <span class="fw-bold float-right">{{question_answer.question.option_4}}</span>
+                  </li>
+          </ul>
+       </section>
+    {% endfor %}
+    </div>
+    <!-- Spied element -->
+  </div>
+
+  <div class="col-md-4">
+    <!-- Scrollspy -->
+    <div id="scrollspy1" class="sticky-top">
+
+        <div class="list-group">
+
+          <li
+            type="button"
+            class="list-group-item list-group-item-action smart_active"
+            aria-current="true">
+
+            All Questions 
+            <span class="badge bg-success float-right" style="font-size: 70%">{{score}}</span>
+          </li>
+                 
+
+             {% for question_answer in all_student_questions %}
+
+                  <a type="button" class="list-group-item list-group-item-action" href="#question-{{ forloop.counter }}">
+                    <span class="badge bg-secondary rounded-pill">Q {{forloop.counter }}</span> 
+                         {{question_answer.question.question_title}}
+                  </a>
+
+  
+                {% endfor %}
+                
+        
+        </div>
+
+    </div>
+    <!-- Scrollspy -->
+  </div>
+</div>
+</label>
+
+<div class="modal" id="remportspamstudent" tabindex="-1" role="dialog" aria-labelledby="remportexamodelTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+ 
+        <h5 class="modal-title" id="exampleModalLongTitle">Report  Student As A Spam</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-info" role="alert">
+          Follwing is some rules that will be apply when you report the user
+          <hr>
+        <ul>
+          <li>Student all answers and detail related(images ,exam session time) to the test will be deleted</li>
+          <li>Student have to give the test again</li>
+          <li>You have to make sure that you extend the time for them to give the test  </li>
+          <li>The Updated marks willl be display instead of that</li>
+        </ul>
+      </div>
+        <div class="form-group">
+    <label for="exampleFormControlTextarea1">Give Descrption</label>
+    {% csrf_token %}
+    <form>
+      <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Enter what is reason you report the student" required=""></textarea>
+
+
+    </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger"  id='report_question'>Report Student</button>
+        </div>
+    </form>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<script type="text/javascript">
+  var report_question=document.getElementById('report_question');
+  var csrftoken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+  var description=document.getElementById('exampleFormControlTextarea1').value
+  
+    report_question.addEventListener("click", (event) => {
+
+  
+  
+        $j.ajax({
+            type: "POST",
+            url:"{% url 'report_student_test' %}",
+            data: {
+                csrfmiddlewaretoken: csrftoken,
+                test_id: {{current_test.pk}},
+                student_id: {{current_student.pk}},
+                description:description,
+            },
+
+            success: function (response) {
+                    window.location.replace(
+                      "{% url 'my_students'  %}"
+                    );
+
+              console.log('done boss')
+
+            },
+        });
+     
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock content %}

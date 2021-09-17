@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+
+
+<div class="row">
+      <div class="contentarea">
+      
+        <div class="camera">
+        <video id="video" height="200" width="200" class="">Video stream not available.</video>
+         </div>
+         <span id="test_data" test-id='{{current_test.id}}' test-question='{{current_test.total_question}}' style="display: none;"></span>
+         
+         <canvas id="canvas" style="display: none;">
+
+                <div class="output">
+                    <img id="photo" alt="The screen capture will appear in this box.">
+                </div></canvas>
+      </div>
+     
+
+
+
+  </div>
+    <div class="alert alert-success fade show" role="alert" id='main_message' style="display: none;">
+      
+      <span id='message'>
+        <strong>Question No :
+          <span id='question_number'></span>
+         </strong> Save with Option :<span id='answer_number'></span>
+
+      </span>
+
+  </div>
+<div class="row" >
+
+    
+      <div class="col-12 col-md-12" >
+          <div id='question_frame' >
+            <div class="card">
+                            {% csrf_token %}
+                   
+                </div>
+            </div>
+            </div>
+
+            <!-- <nav aria-label="Page navigation example" class="mb-10"> -->
+  
+              <div class="col-12 col-md-12">
+              <div class="py-3" style="border:solid;border-radius: 30px;">
+                  <div class="container">
+                  <div class="row ">
+                    <div class="col mt-3">
+                        <button type="button" class="btn btn-success btn-rounded btn-lg btn-block" id='previous_question'> <b>Previous</b></button>
+                     </div>
+
+                    <div class="col mt-3">
+                      <button type="button" class="btn btn-primary btn-rounded btn-lg btn-block" id='next_question'> <b>Next</b></button>
+                    </div>
+                    <div class="col mt-3">
+                      <button type="button" class="btn btn-secondary btn-rounded btn-lg btn-block" id='bookmark_question'> <b>Bookmark</b></button>
+    
+                    </div>
+                    <div class="col mt-3">
+                      <button type="button" class="btn btn-dark btn-rounded btn-lg btn-block" aria-pressed="true" data-toggle="modal"data-target="#remportexamodel"> <b>Report</b></button>
+
+                     
+                    </div>
+                    <div class="col mt-3">
+                      <button type="button" class="btn btn-warning btn-rounded btn-lg btn-block" aria-pressed="true"  id='show_all_question' data-toggle="modal" data-target="#exampleModalLong"> <b style="color: black;">Questions</b></button>
+                   
+                    </div>
+                    <div class="col mt-3"><a class="btn  btn-block btn-danger btn-lg" style="color: white;" id='next_question' data-toggle="modal" data-target="#exampleModalCenter"><b>Submit Exam</b></a></div>
+                 </div>
+                </div> 
+              </div>                 
+              </div>  
+            <!-- </nav> -->
+        
+
+
+
+
+
+<!-- Sumbit Exam Modal -->
+<div class="modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Really Want to Submit Exam</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Really Want to Submit Exam
+        Action Can not undo
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-danger" id="submit_exam">Submit Exam</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Report Question Modal -->
+<div class="modal" id="remportexamodel" tabindex="-1" role="dialog" aria-labelledby="remportexamodelTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+ 
+        <h5 class="modal-title" id="exampleModalLongTitle">Report Question</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-info" role="alert">
+        Leave if you do not want to give discription your report will be send
+      </div>
+        <input class="form-control form-control" type="text" placeholder="Description for Report" id='description_box' value="">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal" id='report_question'>Report Question</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Sho all questionmodel -->
+<div class="modal" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">All Questions</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+               <div class="row " id='all_question_frame'>
+              </div>
+                       
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script type="text/javascript" src="{% static 'js/question_change.js' %}"></script>
+
+
+<script type="text/javascript">
+  
+// timmer in javascrpt
+
+  function makeTimer() {
+
+   var endTime=new Date({{ time_left|date:"U" }}* 1000);
+    endTime = (Date.parse(endTime) / 1000);
+
+        var now = new Date();
+        now = (Date.parse(now) / 1000);
+
+        var timeLeft = endTime - now;
+
+        var days = Math.floor(timeLeft / 86400);
+        var hours = Math.floor((timeLeft - (days * 86400)) / 3600);
+        var minutes = Math.floor((timeLeft - (days * 86400) - (hours * 3600 )) / 60);
+        var seconds = Math.floor((timeLeft - (days * 86400) - (hours * 3600) - (minutes * 60)));
+
+        if (hours < "10") { hours = "0" + hours; }
+        if (minutes < "10") { minutes = "0" + minutes; }
+        if (seconds < "10") { seconds = "0" + seconds; }
+        if (hours=="00" && minutes=="00" && seconds=="00" ){
+          $j.ajax({
+                type: "GET",
+
+                url:"/submit-exam/",
+
+                success: function (response) {
+                        window.location.replace(
+                        "http://localhost:8000/submit-exam/"
+                    );
+            
+                },
+            });
+        }
+
+        $j("#days").html(days + "<span>Days</span>");
+        $j("#hours").html(hours + "<span> Hr</span>");
+        $j("#minutes").html(minutes + "<span> Min</span>");
+        $j("#seconds").html(seconds + "<span> Sec</span>");
+    };
+
+setInterval(function() { makeTimer(); }, 1000);
+</script>
+<script type="text/javascript" src="{% static 'js/video_capuring.js' %}"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ {% endblock content %}

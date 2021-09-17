@@ -1,0 +1,51 @@
+{% extends 'teachers/teachers_base.html' %}
+{% load static %} 
+
+{% load crispy_forms_tags %} 
+{% block content %} 
+
+<h3 class="h3 fw-bold text-center">Update Question "{{question.question_title}}"</h3>
+<hr />
+<div class="row">
+  <form method="POST" action="">
+    {% csrf_token %}
+    <div class="form-row">
+      {% for field in question_update_form %}
+
+      <div class="form-group col-md-6 mb-0">{{ field|as_crispy_field }}</div>
+      {% endfor %}
+    </div>
+
+
+<div class="row">
+  <div class="col-md-6 mt-3">
+            <button
+            type="submit"
+            name="Create Test"
+            class="btn btn-secondary btn-block btn-lg">
+            <i class="fas fa-pencil-alt"></i> Update "{{question.question_title}}"
+          </button></div>
+
+          <div class="col-md-6 mt-3">
+            <a href="{% url 'delete_the_question' question.id %}" class="btn btn-danger btn-block btn-lg">
+                <i class="fas fa-trash-alt"></i>
+                Delete Question
+            </a>
+          </div>
+  
+
+</div>
+
+
+
+
+
+
+
+    <br />
+  </form>
+</div>
+
+{% endblock content %}
+
+
